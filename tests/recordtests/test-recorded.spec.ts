@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
 
+// record the steps using => (command in the terminal) npx playwright codegen https://flipkart.com
+
+// record steps from playwright extension as well
+
 test('This test cases is created through recorder', async ({ page }) => {
   console.time()
   await page.goto('https://demoblaze.com/');
