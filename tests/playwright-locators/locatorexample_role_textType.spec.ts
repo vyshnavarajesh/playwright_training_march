@@ -21,9 +21,17 @@ page.locator(xpath) //priority -3 (last option)
 // Selenium -> id, name, class, tagName, linkText, xpath, css
 
 
-test.beforeEach('initialing browser',async ({page}) =>{
-    await page.goto("https://www.demoblaze.com/#");
-})
+test.beforeEach('initialing browser', async ({page}) =>{
+  await page.goto("https://www.demoblaze.com/#");
+
+  try{
+    await page.waitForSelector('.card-title',{state :'visible',timeout:3000});
+  }
+  catch{
+    await page.reload({waitUntil: 'domcontentloaded'});
+    await page.waitForSelector('.card-title',{state :'visible',timeout:3000});
+  }
+});
 
 test.afterEach('closing browser',async({page}) => {
     await page.close();
@@ -34,25 +42,23 @@ test('locator example for role type', async({page}) =>{
 
     const buttons = page.getByRole('button');
     const buttonCount = await buttons.count();
-
     expect(buttonCount).toBeGreaterThan(0);
-
     console.log(`Total number of buttons : ${buttonCount}`);
 
     /* use nth(0) to access multiple values based on the index => index starts with 0 
-    you can replace nth(0) with first() ; only for firstvalue
-    you can replace nth(n) with last() ; only for last value in index
+      you can replace nth(0) with first() ; only for firstvalue
+      you can replace nth(n) with last() ; only for last value in index
     */
-    await page.getByRole("button", {name:/Next/i}).nth(0).click();
+    await page.getByRole("button", {name:"Next"}).nth(0).click();
    
 })
 
-
 // use test.only() to run specific test cases
-test('locator example for text() type', async({page}) =>{
+test('locator example for text() & screenshot type', async({page}) =>{
 
   //  await page.goto("https://www.demoblaze.com/#"); // moved this to beforeEach
-    await page.getByText('Samsung galaxy s6', { exact: true }).click();
+  await page.getByText('Samsung galaxy s6', { exact: true }).screenshot({path:'./screenshots/img.png'});
+  await page.getByText('Samsung galaxy s6', { exact: true }).click();
   //  await page.close(); // moved this to afterEach
 })
 
