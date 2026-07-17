@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-test('locator example for placeholder type', async({page}) =>{
+test('select class single & multi select example type', async({page}) =>{
+
 
     await page.goto("https://demoqa.com/select-menu");
     //single select option
