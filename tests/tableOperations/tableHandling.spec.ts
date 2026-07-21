@@ -35,7 +35,7 @@ test.only('table examples with duplicate data reading', async ({ page }) => {
 
     let headers = await page.locator('#taskTable thead th').allInnerTexts();
 
-    let memoryColumnIndex = headers.findIndex(header => header.trim() === 'Memory (MB)');
+    let memoryColumnIndex = headers.findIndex(header => header.trim() === 'Memory (MB)'); 
     console.log('memorycolumn =>',memoryColumnIndex);
 
     let rows:Locator[] = await page.locator('#taskTable tbody tr').all();
@@ -55,5 +55,41 @@ test.only('table examples with duplicate data reading', async ({ page }) => {
     }
 
    await page.close();
+
+});
+
+
+
+test.only('table examples with pagination', async ({ page }) => {
+
+    const targetElement = 'Streaming Device';
+    let found = false;
+
+    await page.goto('https://testautomationpractice.blogspot.com/');
+
+    await page.locator('#productTable').scrollIntoViewIfNeeded();
+
+    const pagelinks = page.locator('#pagination a');
+    const linkCount = await pagelinks.count();
+    console.log('linkCount => ',linkCount);
+
+    for(let i=1; i<= linkCount;i++){
+
+      await page.locator(`#pagination a:has-text("${i}")`).click();
+      await page.locator('#productTable tbody tr').first().waitFor(); // first() is used to go through row by row
+
+      const tgElementRow = await page.locator('#productTable tbody tr').filter({hasText : targetElement}); // filter for target element ROw 
+
+        if(await tgElementRow.count() > 0)
+        {
+           await tgElementRow.locator('td:nth-child(4) input[type="checkbox"]').click();
+           found = true;
+           break;
+        }
+    }
+
+   // await page.locator('#productTable').screenshot({path : "img1.png"});
+    await page.pause();
+    await page.close();
 
 });
